@@ -3,38 +3,23 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class GUI implements ActionListener {
+
+public class GUI  {
     private JFrame frame;
-    private JPanel panel1;
-    private JButton button;
-    private JLabel label;
+    private JPanel panel;
+    private StartPanel sPanel;
+    private Panel1v1 panel1v1;
     public GUI()
     {
-        Color myColor = new Color(173, 216, 230);
+
         frame=new JFrame();
-        panel1 =new JPanel();
-        button=new JButton("play 1v1 (2 human players)");
-        label=new JLabel("mankala game");
-
-        label.setBounds(750,300,375,100);
-        label.setHorizontalAlignment(SwingConstants.CENTER);
-        label.setFont(new Font("Bebas Neue", Font.BOLD, 50));
 
 
-        button.addActionListener(this);
-        button.setBounds(800,500,275,75);
-        button.setFont(new Font("Bebas Neue", Font.PLAIN, 20));
-        button.setBackground(Color.lightGray);
+        sPanel=new StartPanel(this);
+        panel=sPanel.getPanel();
 
 
-        //panel.setBorder(BorderFactory.createEmptyBorder(100,100,100,100));
-        panel1.setLayout(null);
-        panel1.add(button);
-        panel1.add(label);
-        panel1.setBackground(myColor);
-
-
-        frame.add(panel1,BorderLayout.CENTER);
+        frame.add(panel,BorderLayout.CENTER);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setTitle("Mankala Game");
         frame.pack();
@@ -44,8 +29,18 @@ public class GUI implements ActionListener {
         frame.setVisible(true);
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        this.panel1.setVisible(false);
+    public void game1v1()
+    {
+        frame.remove(panel);
+
+        panel1v1=new Panel1v1(this);
+        panel=panel1v1.getPanel();
+
+        frame.add(panel,BorderLayout.CENTER);
+        frame.revalidate();
+        frame.repaint();
     }
+
+
+
 }

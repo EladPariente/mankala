@@ -17,4 +17,6 @@ public class Main {
             b.printBoard();
         }
     }
+
+
 }

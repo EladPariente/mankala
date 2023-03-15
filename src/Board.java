@@ -45,8 +45,8 @@ public class Board {
                     board[i] = 0;
                 }
             }
-            this.board[size] += amountB;
-            this.board[size * 2 + 1] += amountA;
+            this.board[size] += amountA;
+            this.board[size * 2 + 1] += amountB;
 
         }
         return gameover;
@@ -74,12 +74,12 @@ public class Board {
         pitStones=this.board[pit];
         this.board[pit]=0;
         lastPit=pit;
-        myScorePit=this.turn?size:size*2+1;
-        opScorePit=this.turn?size*2+1:size;
+        myScorePit=!this.turn?size:size*2+1;
+        opScorePit=!this.turn?size*2+1:size;
 
         while(pitStones>0)
         {
-            lastPit=(lastPit+1)%(size*2+2);
+            lastPit=((lastPit-1)+size*2+2)%(size*2+2);
 
             if(lastPit!=opScorePit)
             {
@@ -88,7 +88,7 @@ public class Board {
             }
         }
 
-        if(lastPit<myScorePit && lastPit>(opScorePit%(size*2+1)) && lastPit==1)
+        if(lastPit>(myScorePit%(size*2+1)) && lastPit<(opScorePit) && this.board[lastPit]==1)
         {
             this.board[lastPit]+=this.board[12-lastPit];
             this.board[12-lastPit]=0;
@@ -111,7 +111,7 @@ public class Board {
         if(this.board[size]==this.board[size*2+1])
             this.gameStat=e_GStatus.DRAW;
         else
-            this.gameStat=this.board[size]>this.board[size*2+1]?e_GStatus.PLAYER_A_WON:e_GStatus.PLAYER_B_WON;
+            this.gameStat=this.board[size]>this.board[size*2+1]?e_GStatus.PLAYER_B_WON:e_GStatus.PLAYER_A_WON;
     }
 
     public void printBoard()
