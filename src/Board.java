@@ -3,8 +3,8 @@ public class Board {
     public static final int stones=4;//amount of stone in each pit at the start of the game
     private boolean turn;//the turn of the player (A=TRUE B=FALSE)
     private int  board[];//the game board
-    public enum  e_status{INVALID_INPUT, VALID, GAME_OVER}
-    private enum  e_GStatus{PLAYER_A_WON, PLAYER_B_WON, DRAW, NOT_FINISHED}
+    //public enum  e_status{INVALID_INPUT, VALID, GAME_OVER}
+    public enum  e_GStatus{PLAYER_A_WON, PLAYER_B_WON, DRAW, NOT_FINISHED}
     private e_GStatus gameStat;
     public Board()
     {
@@ -31,7 +31,7 @@ public class Board {
         {
             amountA+=this.board[i];
         }
-        for(int i=size+2;i<size*2+2;i++)
+        for(int i=size+1;i<size*2+1;i++)
         {
             amountB+=this.board[i];
         }
@@ -60,15 +60,19 @@ public class Board {
         }
         return false;
     }
-    public e_status move(int pit)
+    public GameStatus move(int pit)
     {
         int pitStones;
         int lastPit;
         int opScorePit;
         int myScorePit;
-
+        GameStatus status;
         if(!this.isValidPit(pit))
-            return e_status.INVALID_INPUT;
+        {
+            status=new GameStatus(this.gameStat,turn);
+            return status;
+        }
+
 
 
         pitStones=this.board[pit];
@@ -99,11 +103,13 @@ public class Board {
         if(isGameOver())
         {
             this.calculateWinner();
-            return e_status.GAME_OVER;
+            status=new GameStatus(this.gameStat,turn);
+            return status;
         }
 
 
-        return e_status.VALID;
+        status=new GameStatus(this.gameStat,turn);
+        return status;
     }
 
     private void calculateWinner()
