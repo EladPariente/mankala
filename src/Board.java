@@ -31,7 +31,7 @@ public class Board {
         {
             amountA+=this.board[i];
         }
-        for(int i=size+2;i<size*2+1;i++)
+        for(int i=size+2;i<size*2+2;i++)
         {
             amountB+=this.board[i];
         }
@@ -88,11 +88,11 @@ public class Board {
             }
         }
 
-        if(lastPit>(myScorePit%(size*2+1)) && lastPit<(opScorePit) && this.board[lastPit]==1)
-        {
-            this.board[lastPit]+=this.board[12-lastPit];
-            this.board[12-lastPit]=0;
-        }
+//        if(lastPit>(myScorePit%(size*2+1)) && lastPit<(opScorePit) && this.board[lastPit]==1)
+//        {
+//            this.board[lastPit]+=this.board[12-lastPit];
+//            this.board[12-lastPit]=0;
+//        }
 
         this.turn=myScorePit==lastPit?this.turn:!this.turn;
 
@@ -132,5 +132,10 @@ public class Board {
             System.out.print("  "+this.board[i]);
         }
         System.out.println();
+    }
+
+    public int[] getBoard()
+    {
+        return board;
     }
 }

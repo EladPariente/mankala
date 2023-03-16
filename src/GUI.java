@@ -1,7 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 
 public class GUI  {
@@ -9,6 +7,7 @@ public class GUI  {
     private JPanel panel;
     private StartPanel sPanel;
     private Panel1v1 panel1v1;
+
     public GUI()
     {
 
@@ -39,6 +38,8 @@ public class GUI  {
         frame.add(panel,BorderLayout.CENTER);
         frame.revalidate();
         frame.repaint();
+
+
     }
 
 
