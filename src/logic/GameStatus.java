@@ -1,7 +1,11 @@
+package logic;
+
+import logic.Board;
+
 public class GameStatus {
 
-    private Board.e_GStatus status;
-    private boolean turn;
+    private Board.e_GStatus status;//status of the board
+    private boolean turn;//the turn
 
     public GameStatus(Board.e_GStatus status,boolean turn) {
         this.turn=turn;

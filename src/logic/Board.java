@@ -1,3 +1,5 @@
+package logic;
+
 public class Board {
     public static final int size=6;//size of each size of the board, not including the scoring pits
     public static final int stones=4;//amount of stone in each pit at the start of the game
@@ -6,8 +8,7 @@ public class Board {
     //public enum  e_status{INVALID_INPUT, VALID, GAME_OVER}
     public enum  e_GStatus{PLAYER_A_WON, PLAYER_B_WON, DRAW, NOT_FINISHED}
     private e_GStatus gameStat;
-    public Board()
-    {
+    public Board() {
         this.gameStat=e_GStatus.NOT_FINISHED;
         this.board=new int[size*2+2];
         this.turn=true;
@@ -22,8 +23,7 @@ public class Board {
         this.board[size * 2 + 1] = 0;
     }
 
-    private boolean isGameOver()
-    {
+    private boolean isGameOver() {
         int amountA=0;
         int amountB=0;
         boolean gameover=false;
@@ -52,16 +52,14 @@ public class Board {
         return gameover;
     }
 
-    private boolean isValidPit(int pit)
-    {
+    private boolean isValidPit(int pit) {
         if((((this.turn && (pit>=0 && pit<size) )||( !this.turn && (pit>=size+1 && pit<size*2+1))))&&this.board[pit]>0)
         {
             return true;
         }
         return false;
     }
-    public GameStatus move(int pit)
-    {
+    public GameStatus move(int pit) {
         int pitStones;
         int lastPit;
         int opScorePit;
@@ -112,16 +110,14 @@ public class Board {
         return status;
     }
 
-    private void calculateWinner()
-    {
+    private void calculateWinner() {
         if(this.board[size]==this.board[size*2+1])
             this.gameStat=e_GStatus.DRAW;
         else
             this.gameStat=this.board[size]>this.board[size*2+1]?e_GStatus.PLAYER_B_WON:e_GStatus.PLAYER_A_WON;
     }
 
-    public void printBoard()
-    {
+    public void printBoard() {
         if(this.gameStat==e_GStatus.NOT_FINISHED)
             System.out.println("next turn:" + (this.turn ? "player A" : "player B"));
         else

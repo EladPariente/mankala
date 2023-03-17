@@ -1,15 +1,16 @@
+package logic;
+
 public class Game1v1 {
-    public Board b;
-    public GameStatus status;
+    public Board b;//board
+    public GameStatus status;//the status
     public  Game1v1()
     {
         b=new Board();
     }
 
-    public GameStatus stepGame(int index)
-    {
+    public GameStatus stepGame(int index) {
 
-        //b=new Board();
+
         status=this.b.move(index);
         return status;
 

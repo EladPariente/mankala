@@ -1,3 +1,7 @@
+package UI;
+
+import UI.GUI;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -5,13 +9,12 @@ import java.awt.event.ActionListener;
 
 public class StartPanel implements ActionListener {
 
-    private JPanel startPanel;
-    private JButton button1v1;
-    private JLabel label;
-    private GUI mygui;
+    private JPanel startPanel;//panel
+    private JButton button1v1;//button for 1v1 game
+    private JLabel label;//title
+    private GUI mygui;//the UI.GUI of the game
 
-    public StartPanel(GUI g)
-    {
+    public StartPanel(GUI g) {
         this.mygui=g;
 
         Color myColor = new Color(173, 216, 230);
@@ -30,7 +33,7 @@ public class StartPanel implements ActionListener {
         button1v1.setBackground(Color.lightGray);
 
 
-        //panel.setBorder(BorderFactory.createEmptyBorder(100,100,100,100));
+
         startPanel.setLayout(null);
         startPanel.add(button1v1);
         startPanel.add(label);
@@ -42,7 +45,6 @@ public class StartPanel implements ActionListener {
     {
         return this.startPanel;
     }
-
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource()==button1v1)

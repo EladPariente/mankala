@@ -1,15 +1,16 @@
+package UI;
+
 import javax.swing.*;
 import java.awt.*;
 
 
 public class GUI  {
-    private JFrame frame;
-    private JPanel panel;
-    private StartPanel sPanel;
-    private Panel1v1 panel1v1;
+    private JFrame frame;//frame
+    private JPanel panel;//the panel that presented
+    private StartPanel sPanel;//manage the start panel
+    private Panel1v1 panel1v1;//manage the 1v1 panel
 
-    public GUI()
-    {
+    public GUI() {
 
         frame=new JFrame();
 
@@ -22,8 +23,7 @@ public class GUI  {
         frame.setVisible(true);
     }
 
-    public void startPanel()
-    {
+    public void startPanel() {
         if(panel!=null)
             frame.remove(panel);
 
@@ -35,8 +35,7 @@ public class GUI  {
         frame.repaint();
     }
 
-    public void game1v1()
-    {
+    public void game1v1() {
         frame.remove(panel);
 
         panel1v1=new Panel1v1(this);
