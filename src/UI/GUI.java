@@ -8,7 +8,8 @@ public class GUI  {
     private JFrame frame;//frame
     private JPanel panel;//the panel that presented
     private StartPanel sPanel;//manage the start panel
-    private Panel1v1 panel1v1;//manage the 1v1 panel
+    private PanelPvP panelPvP;//manage the 1v1 panel
+    private PanelPvC panelPvC;//manage the 1v1 panel
 
     public GUI() {
 
@@ -35,11 +36,23 @@ public class GUI  {
         frame.repaint();
     }
 
-    public void game1v1() {
+    public void gamePvP() {
         frame.remove(panel);
 
-        panel1v1=new Panel1v1(this);
-        panel=panel1v1.getPanel();
+        panelPvP =new PanelPvP(this);
+        panel= panelPvP.getPanel();
+
+        frame.add(panel,BorderLayout.CENTER);
+        frame.revalidate();
+        frame.repaint();
+
+
+    }
+    public void gamePvC() {
+        frame.remove(panel);
+
+        panelPvC =new PanelPvC(this);
+        panel= panelPvC.getPanel();
 
         frame.add(panel,BorderLayout.CENTER);
         frame.revalidate();

@@ -1,8 +1,8 @@
 package UI;
 
-import UI.GUI;
 import logic.Board;
-import logic.Game1v1;
+import logic.GamePvC;
+import logic.GamePvP;
 import logic.GameStatus;
 
 import javax.swing.*;
@@ -12,7 +12,7 @@ import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Panel1v1  implements ActionListener {
+public class PanelPvC implements ActionListener {
 
     private JButton[]buttons;//pit buttons
     private JPanel panel;//panel
@@ -21,7 +21,7 @@ public class Panel1v1  implements ActionListener {
     Map<JButton, Runnable> actions;//lambda actions pits
     private JLabel label;//title
     private GUI mygui;//the UI.GUI of the game
-    private Game1v1 game;//1v1 middle man (manage the game)
+    private GamePvC game;//1v1 middle man (manage the game)
     private JButton returnB;//button to return to the start
     private JButton newGB;//button to restart game
 
@@ -43,7 +43,7 @@ public class Panel1v1  implements ActionListener {
         if(e.getSource()==returnB)
             this.mygui.startPanel();
         else if (e.getSource()==newGB)
-            this.mygui.game1v1();
+            this.mygui.gamePvC();
     }
 
     private void updateButtons(int[] b,boolean turn){
@@ -65,10 +65,10 @@ public class Panel1v1  implements ActionListener {
         return this.panel;
     }
 
-    public Panel1v1(GUI g) {
+    public PanelPvC(GUI g) {
 
         this.mygui=g;
-        this.game=new Game1v1();
+        this.game=new GamePvC();
 
 
 
@@ -105,7 +105,7 @@ public class Panel1v1  implements ActionListener {
         {
             buttons[i]=new JButton("4");
             final int x=i;
-            buttons[i].setBounds(400+(x)*200,300,150,150);
+            buttons[i].setBounds(400+(x)*200,600,150,150);
             buttons[i].setFont(new Font("Bebas Neue", Font.PLAIN, 70));
             buttons[i].setBackground(Color.orange);
             actions.put(buttons[i], () -> BClicked(x));
@@ -116,7 +116,7 @@ public class Panel1v1  implements ActionListener {
         {
             buttons[i]=new JButton("4");
             final int x=i+1;
-            buttons[i].setBounds(400+(11-i)*200,600,150,150);
+            buttons[i].setBounds(400+(11-i)*200,300,150,150);
             buttons[i].setFont(new Font("Bebas Neue", Font.PLAIN, 70));
             buttons[i].setBackground(Color.orange);
             actions.put(buttons[i], () -> BClicked(x));

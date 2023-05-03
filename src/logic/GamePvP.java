@@ -1,11 +1,13 @@
 package logic;
 
-public class Game1v1 {
+public class GamePvP {
     public Board b;//board
     public GameStatus status;//the status
-    public  Game1v1()
+
+    public GamePvP()
     {
         b=new Board();
+
     }
 
     public GameStatus stepGame(int index) {

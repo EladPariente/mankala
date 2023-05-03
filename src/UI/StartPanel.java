@@ -1,7 +1,5 @@
 package UI;
 
-import UI.GUI;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -10,7 +8,8 @@ import java.awt.event.ActionListener;
 public class StartPanel implements ActionListener {
 
     private JPanel startPanel;//panel
-    private JButton button1v1;//button for 1v1 game
+    private JButton buttonPvP;//button for 1v1 game
+    private JButton buttonPvC;
     private JLabel label;//title
     private GUI mygui;//the UI.GUI of the game
 
@@ -19,7 +18,8 @@ public class StartPanel implements ActionListener {
 
         Color myColor = new Color(173, 216, 230);
         startPanel =new JPanel();
-        button1v1 =new JButton("play 1v1 (2 human players)");
+        buttonPvP =new JButton("play 1v1 (2 human players)");
+        buttonPvC =new JButton("play 1vC (2 human players)");
         label=new JLabel("mankala game");
 
         label.setBounds(750,300,375,100);
@@ -27,15 +27,21 @@ public class StartPanel implements ActionListener {
         label.setFont(new Font("Bebas Neue", Font.BOLD, 50));
 
 
-        button1v1.addActionListener(this);
-        button1v1.setBounds(800,500,275,75);
-        button1v1.setFont(new Font("Bebas Neue", Font.PLAIN, 20));
-        button1v1.setBackground(Color.lightGray);
+        buttonPvP.addActionListener(this);
+        buttonPvP.setBounds(800,500,275,75);
+        buttonPvP.setFont(new Font("Bebas Neue", Font.PLAIN, 20));
+        buttonPvP.setBackground(Color.lightGray);
+
+        buttonPvC.addActionListener(this);
+        buttonPvC.setBounds(800,600,275,75);
+        buttonPvC.setFont(new Font("Bebas Neue", Font.PLAIN, 20));
+        buttonPvC.setBackground(Color.lightGray);
 
 
 
         startPanel.setLayout(null);
-        startPanel.add(button1v1);
+        startPanel.add(buttonPvP);
+        startPanel.add(buttonPvC);
         startPanel.add(label);
         startPanel.setBackground(myColor);
 
@@ -47,8 +53,10 @@ public class StartPanel implements ActionListener {
     }
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource()==button1v1)
-            this.mygui.game1v1();
+        if(e.getSource()== buttonPvP)
+            this.mygui.gamePvP();
+        if(e.getSource()== buttonPvC)
+            this.mygui.gamePvC();
 
     }
 }
