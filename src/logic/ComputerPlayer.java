@@ -2,11 +2,29 @@ package logic;
 
 import java.util.LinkedList;
 
+/**
+ * The `ComputerPlayer` class represents an AI player for the game of mancala.
+ * It uses decision-making algorithm to determine the
+ * optimal move to make in each turn.
+ */
 public class ComputerPlayer {
 
-    private int[] board=new int[Board.size*2+2];
-    private boolean turn;
-    private LinkedList<Integer>[] info = new LinkedList[Board.size*2+2];
+    private int[] board=new int[Board.size*2+2];// the game board
+    private boolean turn;// the turn of the computer
+
+    /**
+     * The `info` array contains information about the state of the game board.
+     * The array has length 4, and each element is a linked list that contains
+     * the indices of the pits that match the corresponding category:
+     *
+     * - info[0]: Pits that will allow the player to take another turn
+     * - info[1]: Pits that are valid moves for the current player
+     * - info[2]: Pits that will capture the opponent's stones
+     * - info[3]: Pits that will allow the opponent to capture the current player's stones
+     */
+    private LinkedList<Integer>[] info = new LinkedList[4];
+
+
 
     public ComputerPlayer(boolean turn)
     {
@@ -14,129 +32,125 @@ public class ComputerPlayer {
 
     }
 
-    public int optimalMove(int[] board)
-    {
-        for(int i=0;i<this.info.length;i++)
-        {
+    /**
+     * Determines the optimal move to make given the current board configuration.
+     *
+     * @param board the current board configuration represented as an integer array
+     * @return the index of the optimal move to make
+     *
+     * Complexity Analysis:
+     * - The method initializes a linked list for each of the four move types, which takes O(1) time for each list.
+     * - The method then iterates through the 14 positions on the board and sets the corresponding position on the internal board array to the value of the corresponding position on the input board array, which takes O(14) = O(1) time.
+     * - The method then calls the scanBoard() method, which takes O(n) time, where n is the number of positions on the board.
+     * - The method then calls the rules() method, which takes O(n) time.
+     * - Therefore, the overall time complexity of the method is O(n).
+     */
+    public int optimalMove(int[] board) {
+        for(int i=0;i<this.info.length;i++) {
             this.info[i]=new LinkedList<>();
         }
-        for(int i=0;i<14;i++)
-        {
+        for(int i=0;i<14;i++) {
             this.board[i]=board[i];
         }
-        System.out.println("****"+this.board[8]);
-        //System.arraycopy(board,0,this.board,0,14);
-        scanBoard();
-        return rulls();
+
+        scanBoard(); // O(n)
+        return decisionMaking(); // O(n)
     }
+
+
+
+    /**
+     * Scans the current game board and generates a list of all possible moves and captures for the current player.
+     * This function updates the 'info' attribute of the current object with four linked lists, each containing the
+     * indexes of pits on the board that correspond to a specific type of move:
+     *
+     * info[0] - anther turn moves
+     * info[1] - potential moves
+     * info[2] - capture moves
+     * info[3] - capture opponent moves
+     *
+     * Complexity: O(n), where 'n' is the number of pits on the game board.
+     */
     private void scanBoard() {
-        int startM=this.turn?0:7;
-        int startO=this.turn?7:0;
-        int endM=this.turn?5:12;
-        int endO=this.turn?12:5;
-        int maxD=0;
-        int maxDPit=0;
+        int startM= Board.startPit(turn);
+        int startO=Board.startPit(!turn);
+        int endM=Board.endPit(turn);
+        int endO=Board.endPit(!turn);
         int dest;
-        for(int i=startM;i<=endM;i++)
+        int maxT=0;
+        int maxTP=0;
+
+        for(int i=startM;i<=endM;i++)//computer loop
         {
-            System.out.println("**********"+i);
-            //int I = Math.abs((i > 6 ? 12 : 0) - i);
-            if(this.board[i]+ i%7 <=6 &&this.board[i]+ i%7 >=4)
+
+            if(this.board[i]+ i%7 ==6 )
             {
-                this.info[6-(this.board[i]+ i%7) ].add(i);
+                this.info[0].add(i);//all the anther turn moves
             }
 
-            if(maxD<this.board[i]+ i)
+            if(this.board[i]!=0)
             {
-                maxD=this.board[i]+ i;
-                maxDPit=i;
+                this.info[1].add(i);//all the potential moves
             }
 
-            if(this.board[i]==0)
-            {
-                this.info[4].add(i);
-            }
-            else
-            {
-                this.info[5].add(i);
-            }
-            dest=Board.dest(i,this.board[i]);
+            dest=Board.getNextPit(i,this.board[i]);
             if(this.board[i]!=0 && dest>=startM && dest<=endM && this.board[12-dest]!=0 && this.board[dest]==0)
             {
-                this.info[6].add(i);
-                //
+                this.info[2].add(i);//all the capture moves
+
             }
 
         }
-        System.out.println("****"+this.board[8]);
-        this.info[3].add(maxDPit);
-        maxD=0;
-        maxDPit=0;
-        int maxT=0;
-        int maxTP=0;
-        int maxT1=0;
-        int maxTP1=0;
-        for(int i=startO;i<=endO;i++)
+
+        for(int i=startO;i<=endO;i++)//opponent loop
         {
 
-            dest=Board.dest(i,this.board[i]);
-//            if(i==0)
-//                System.out.println("&&&&&&&&"+this.board[i]);
+            dest=Board.getNextPit(i,this.board[i]);
+
             if(this.board[i]!=0 && dest>=startO && dest<=endO && this.board[12-dest]!=0 && this.board[12-dest]+1>maxT &&this.board[dest]==0)
             {
                 maxT=this.board[12-dest]+1;
                 maxTP=i;
 
             }
-            dest=Board.dest(i,this.board[i]+1);
-            if(this.board[i]!=0 && dest>=startO && dest<=endO && this.board[12-dest]!=0 && this.board[12-dest]+1>maxT1)
-            {
-                maxT1=this.board[12-dest]+1;
-                maxTP1=i;
-            }
-            if(maxD<this.board[i]+ i)
-            {
-                maxD=this.board[i]+ i;
-                maxDPit=i;
-            }
-
         }
         if(maxT!=0)
-            this.info[7].add(maxTP);
-
-        this.info[8].add(maxTP1);
-        this.info[9].add(maxDPit);
-
+            this.info[3].add(maxTP);//all the capture opponent moves
 
     }
-    private int rulls() {
+
+    /**
+     * Determines the optimal move for the current state of the game according to a set of rules.
+     *
+     * @return The pit index of the optimal move.
+     *
+     * @complexity O(N), where N is the number of pits on the board. The function uses nested loops
+     *             to iterate over the pits.
+     */
+    private int decisionMaking() {
         int optimalMove;
         int capture;
         int hits;
         int amountO;
         int amountM;
-        System.out.println(this.info[4].size());
-        optimalMove=(this.info[5].getLast()==5||this.info[5].getLast()==12)?this.info[5].getLast():this.info[5].getFirst();
-        //optimalMove=this.info[5].getLast();
-//        if(!this.info[9].isEmpty())
-//        {
-//            int dest=Board.Pit(this.info[9].getFirst(),this.board[this.info[9].getFirst()]);
-//            if(dest>Board.startPit(this.turn))
-//            {
-//
-//            }
-//
-//        }
+        int danger;
+
+
+        //check the first and the last pit
+        optimalMove=(this.info[1].getLast()==5||this.info[1].getLast()==12)?this.info[1].getLast():this.info[1].getFirst();
+
+        //checks for potential of another move
         if(!this.info[0].isEmpty())
         {
             optimalMove=this.info[0].getFirst();
         }
-        System.out.println("))))))))))"+optimalMove);
-        if(!this.info[6].isEmpty())
+
+        //checks for potential of capture
+        if(!this.info[2].isEmpty())
         {
-            capture=this.maxCapture();
+            capture=this.findPitWithMaxCapture();
             hits=0;
-            amountM=this.board[12-Board.dest(capture,this.board[capture])]+1;
+            amountM=this.board[12-Board.getNextPit(capture,this.board[capture])]+1;
             for (int x:this.info[0])
             {
                 hits+=capture<x?1:0;
@@ -148,39 +162,40 @@ public class ComputerPlayer {
             }
 
         }
-        System.out.println("))))))))))"+optimalMove);
-        if(!this.info[7].isEmpty())
+
+        //checks for potential for the opponent to capture
+        if(!this.info[3].isEmpty())
         {
-            //System.out.println("*********"+this.info[7].getFirst());
-            int danger=12-Board.dest(this.info[7].getFirst(),this.board[this.info[7].getFirst()]);
+
+            danger=12-Board.getNextPit(this.info[3].getFirst(),this.board[this.info[3].getFirst()]);
 
             amountO=this.board[danger]+1;
-            //int sum=Board.dest(this.info[6].getFirst(),this.board[this.info[6].getFirst()]);
 
-            if(!this.info[6].isEmpty())
+
+            if(!this.info[2].isEmpty())
             {
-                int n=this.maxCapture();
-                amountM=this.board[12-Board.dest(n,this.board[n])]+1;
+                capture=this.findPitWithMaxCapture();
+                amountM=this.board[12-Board.getNextPit(capture,this.board[capture])]+1;
                 for (int x:this.info[0]) {
-                    amountM+=x>n?1:0;
+                    amountM+=x>capture?1:0;
                 }
                 if(amountM>amountO)
                 {
                     if (!this.info[0].isEmpty())
                     {
-                        if(this.info[0].getFirst()>n)
+                        if(this.info[0].getFirst()>capture)
                         {
 
                             optimalMove=this.info[0].getFirst();
                         }
                         else
                         {
-                            optimalMove=n;
+                            optimalMove=capture;
                         }
                     }
                     else
                     {
-                        optimalMove=n;
+                        optimalMove=capture;
                     }
                 }
                 else
@@ -192,60 +207,70 @@ public class ComputerPlayer {
             else{
                 optimalMove=defenceStrategy(danger);
             }
-
-
         }
-
         return optimalMove;
     }
-    private int defenceStrategy(int danger)
+
+    /**
+     * Returns the pit to be used for defense, given the pit that is being threatened.
+     * If the player has no defensive pits, returns the threatened pit. If the player has
+     * defensive pits but none of them are being threatened, returns the first defensive pit.
+     *
+     * @param threatenedPit the pit that is being threatened
+     * @return the pit to be used for defense
+     *
+     * Time Complexity: O(1)
+     */
+    private int defenceStrategy(int threatenedPit)
     {
 
-        int op;
+        int defensivePit;
         if (!this.info[0].isEmpty())
         {
-            op = this.info[0].getFirst();
+            defensivePit = this.info[0].getFirst();
         }
         else
         {
-            if(this.info[0].contains(danger))
+            if(this.info[0].contains(threatenedPit))
             {
-                op=this.info[0].getFirst();
+                defensivePit=this.info[0].getFirst();
             }
             else
             {
-//                if(this.info[1].contains(danger)&& Board.Pit(this.info[3].getFirst(),this.board[this.info[3].getFirst()])>this.info[7].getFirst())
-//                {
-//                    op=this.info[3].getFirst();
-//                }
-//                else
-//                {
-//                    op=danger;
-//                }
-                op=danger;
+                defensivePit=threatenedPit;
             }
 
         }
-        return op;
+        return defensivePit;
     }
-    private int maxCapture()
-    {
 
-        int max=0;
-        int numMax=0;
-        int amount=0;
-        for (int x:this.info[6])
-        {
-            //System.out.println(this.info[6].size());
-            amount=this.board[12-Board.dest(x,this.board[x])]+1;
-            if(amount>max)
-            {
-                max=amount;
-                numMax=x;
+    /**
+     * Finds the pit with the maximum number of captures that can be made.
+     * @return the index of the pit with the maximum captures
+     *
+     * Time Complexity: O(n), where n is the length of the array this.info[2].
+     * The for loop iterates through each element of the array, and each iteration
+     * performs constant time operations.
+     */
+    private int findPitWithMaxCapture() {
+        int maxStonesCaptured = 0;
+        int pitWithMaxStonesCaptured = 0;
+        int stonesCaptured = 0;
+
+        for (int pit : this.info[2]) {
+            int oppositePit = 12 - Board.getNextPit(pit, this.board[pit]);
+            stonesCaptured = this.board[oppositePit] + 1;
+
+            if (stonesCaptured > maxStonesCaptured) {
+                maxStonesCaptured = stonesCaptured;
+                pitWithMaxStonesCaptured = pit;
             }
         }
-        return numMax;
+
+        return pitWithMaxStonesCaptured;
     }
+
 
 
 }
+

@@ -22,6 +22,15 @@ public class Board {
         this.board[size * 2 + 1] = 0;
     }
 
+    /**
+     * Checks if the game is over by counting the total number of stones on each side of the board.
+     * If either side has no stones left, the remaining stones are added to the corresponding scoring pit
+     * and the game ends.
+     *
+     * @return true if the game is over, false otherwise
+     *
+     * Time complexity: O(size), where size is the size of each side of the board
+     */
     private boolean isGameOver() {
         int amountA=0;
         int amountB=0;
@@ -46,11 +55,18 @@ public class Board {
             }
             this.board[size] += amountA;
             this.board[size * 2 + 1] += amountB;
-
         }
         return gameover;
     }
 
+
+    /**
+     * Checks if a given pit is a valid choice for the current player to make a move from.
+     * @param pit The index of the pit to check.
+     * @return True if the pit is a valid choice, false otherwise.
+     *
+     * Complexity: O(1)
+     */
     private boolean isValidPit(int pit) {
         if((((this.turn && (pit>=0 && pit<size) )||( !this.turn && (pit>=size+1 && pit<size*2+1))))&&this.board[pit]>0)
         {
@@ -58,6 +74,16 @@ public class Board {
         }
         return false;
     }
+    /**
+     * Performs a move by a player on the game board.
+     *
+     * @param pit The index of the pit that the player has chosen to move from
+     * @return A GameStatus object representing the result of the move and the current game state
+     *
+     * Time Complexity: O(n), where n is the number of stones in the pit being moved.
+     *                  The while loop that moves the stones runs n times in the worst case.
+     * Space Complexity: O(1), as the function uses a constant amount of additional memory
+     */
     public GameStatus move(int pit) {
         int pitStones;
         int lastPit;
@@ -69,8 +95,6 @@ public class Board {
             status=new GameStatus(this.gameStat,turn);
             return status;
         }
-
-
 
         pitStones=this.board[pit];
         this.board[pit]=0;
@@ -88,17 +112,12 @@ public class Board {
                 pitStones--;
             }
         }
-        if ((this.turn && lastPit>=0 && lastPit<=5 && this.board[lastPit]==1)||(!this.turn && lastPit>=7 && lastPit<=12 && this.board[lastPit]==1))
+        if ((this.turn && lastPit>=0 && lastPit<=5 && this.board[lastPit]==1 && this.board[12-lastPit]!=0)||(!this.turn && lastPit>=7 && lastPit<=12 && this.board[lastPit]==1 && this.board[12-lastPit]!=0))
         {
             this.board[myScorePit]+=this.board[lastPit]+this.board[12-lastPit];
             this.board[lastPit]=0;
             this.board[12-lastPit]=0;
         }
-//        if(lastPit>(myScorePit%(size*2+1)) && lastPit<(opScorePit) && this.board[lastPit]==1)
-//        {
-//            this.board[lastPit]+=this.board[12-lastPit];
-//            this.board[12-lastPit]=0;
-//        }
 
         this.turn=myScorePit==lastPit?this.turn:!this.turn;
 
@@ -109,56 +128,79 @@ public class Board {
             return status;
         }
 
-
         status=new GameStatus(this.gameStat,turn);
         return status;
     }
 
+
+    /**
+     * Calculates the winner of the game by comparing the number of stones in each player's score pit.
+     * If both score pits have the same number of stones, the game is a draw.
+     * Otherwise, the player with more stones in their score pit is declared the winner.
+     * This function has a constant time complexity of O(1), as it performs a fixed set of operations regardless of the size of the board.
+     */
     private void calculateWinner() {
-        if(this.board[size]==this.board[size*2+1])
-            this.gameStat=e_GStatus.DRAW;
+        if (this.board[size] == this.board[size*2+1])
+            this.gameStat = e_GStatus.DRAW;
         else
-            this.gameStat=this.board[size]>this.board[size*2+1]?e_GStatus.PLAYER_B_WON:e_GStatus.PLAYER_A_WON;
+            this.gameStat = this.board[size] > this.board[size*2+1] ? e_GStatus.PLAYER_B_WON : e_GStatus.PLAYER_A_WON;
     }
 
-    public void printBoard() {
-        if(this.gameStat==e_GStatus.NOT_FINISHED)
-            System.out.println("next turn:" + (this.turn ? "player A" : "player B"));
-        else
-            System.out.println(this.gameStat);
-        for(int i=0;i<size;i++)
-        {
-            System.out.print("  "+this.board[i]);
-        }
-        System.out.println();
-        System.out.print(this.board[size*2+1]+"                  "+this.board[size]);
-        System.out.println();
-        for(int i=size*2;i>size;i--)
-        {
-            System.out.print("  "+this.board[i]);
-        }
-        System.out.println();
-    }
+
+//    public void printBoard() {
+//        if(this.gameStat==e_GStatus.NOT_FINISHED)
+//            System.out.println("next turn:" + (this.turn ? "player A" : "player B"));
+//        else
+//            System.out.println(this.gameStat);
+//        for(int i=0;i<size;i++)
+//        {
+//            System.out.print("  "+this.board[i]);
+//        }
+//        System.out.println();
+//        System.out.print(this.board[size*2+1]+"                  "+this.board[size]);
+//        System.out.println();
+//        for(int i=size*2;i>size;i--)
+//        {
+//            System.out.print("  "+this.board[i]);
+//        }
+//        System.out.println();
+//    }
 
     public int[] getBoard()
     {
         return board;
     }
 
-    public static int dest(int src,int amount)
-    {
-
-        if(src>=0&&src<=5)
-        {
-            return ((amount+src)%14+(amount+src)/14)%14;
-        }
-        else
-        {
-            return (int)(((amount+src)%14+Math.floor(0.5*(amount+src)/7))%14);
+    /**
+     * Calculates the destination pit index based on the source pit index and the amount of stones being moved.
+     * @param src The index of the source pit.
+     * @param amount The number of stones being moved.
+     * @return The index of the destination pit.
+     * The complexity of this function is O(1).
+     */
+    public static int getNextPit(int src, int amount) {
+        if (src >= 0 && src <= 5) {
+            return ((amount + src) % 14 + (amount + src) / 14) % 14;
+        } else {
+            return (int) (((amount + src) % 14 + Math.floor(0.5 * (amount + src) / 7)) % 14);
         }
     }
 
-    public static int Pit(int src,int amount)
+    /**
+     * Returns the index of the pit that a stone will end up in after being moved from a given source pit with a specified amount.
+     * If the source pit is on the left side (player A), the returned pit will always be in the range [0, 6].
+     * If the source pit is on the right side (player B), the returned pit will always be in the range [7, 13].
+     * If the stone lands in a player's own scoring pit (pit 6 or pit 13), the returned pit will be -1.
+     * If the stone lands in the opponent's scoring pit, the returned pit will be 5 (if the source pit is on the right side) or 12 (if the source pit is on the left side).
+     * If the stone would have gone past the opponent's scoring pit, it will wrap around and continue on the same side of the board.
+     *
+     * @param src the index of the source pit
+     * @param amount the number of stones being moved from the source pit
+     * @return the index of the pit that the last stone will end up in
+     *
+     * The complexity of this function is O(1).
+     */
+    public static int getDestinationPitIndex(int src, int amount)
     {
         if(src<6)
         {
@@ -180,19 +222,38 @@ public class Board {
                     return (src+amount)%14;
         }
     }
-    public static int startPit(boolean turn)
-    {
-        if(turn)
+
+    /**
+     * Returns the starting pit index for the given player turn.
+     *
+     * @param turn a boolean value indicating the player's turn (true for Player A, false for Player B)
+     * @return the starting pit index for the given player turn (0 for Player A, 7 for Player B)
+     *
+     * @implSpec This method has a time complexity of O(1).
+     */
+    public static int startPit(boolean turn) {
+        if(turn) {
             return 0;
-        else
+        } else {
             return 7;
+        }
     }
-    public static int endPit(boolean turn)
-    {
-        if(turn)
+
+    /**
+     * Returns the ending pit index for the given player turn.
+     *
+     * @param turn a boolean value indicating the player's turn (true for Player A, false for Player B)
+     * @return the ending pit index for the given player turn (5 for Player A, 12 for Player B)
+     *
+     * @implSpec This method has a time complexity of O(1).
+     */
+    public static int endPit(boolean turn) {
+        if(turn) {
             return 5;
-        else
+        } else {
             return 12;
+        }
     }
+
 
 }

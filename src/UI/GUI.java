@@ -1,66 +1,73 @@
 package UI;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import java.awt.BorderLayout;
 
+/**
+ * The GUI class manages the user interface for the Mancala game.
+ */
+public class GUI {
 
-public class GUI  {
-    private JFrame frame;//frame
-    private JPanel panel;//the panel that presented
-    private StartPanel sPanel;//manage the start panel
-    private PanelPvP panelPvP;//manage the 1v1 panel
-    private PanelPvC panelPvC;//manage the 1v1 panel
+    private JFrame gameFrame;           // The main window frame
+    private JPanel currentPanel;           // The current panel being displayed
+    private StartPanel startPanel;  // The panel for the game's start screen
+    private PanelPvP pvpPanel;      // The panel for the player vs. player game mode
+    private PanelPvC pvcPanel;      // The panel for the player vs. computer game mode
 
+    /**
+     * Constructs a new instance of the GUI class and initializes the main window.
+     */
     public GUI() {
-
-        frame=new JFrame();
-
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setTitle("Mankala Game");
-        frame.pack();
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        this.startPanel();
-
-        frame.setVisible(true);
+        gameFrame = new JFrame();
+        gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        gameFrame.setTitle("Mancala Game");
+        gameFrame.pack();
+        gameFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        startPanel();
+        gameFrame.setVisible(true);
     }
 
+    /**
+     * Displays the start panel in the main window.
+     */
     public void startPanel() {
-        if(panel!=null)
-            frame.remove(panel);
+        if (currentPanel != null)
+            gameFrame.remove(currentPanel);
 
-        sPanel=new StartPanel(this);
-        panel=sPanel.getPanel();
+        startPanel = new StartPanel(this);
+        currentPanel = startPanel.getPanelStart();
 
-        frame.add(panel,BorderLayout.CENTER);
-        frame.revalidate();
-        frame.repaint();
+        gameFrame.add(currentPanel, BorderLayout.CENTER);
+        gameFrame.revalidate();
+        gameFrame.repaint();
     }
 
+    /**
+     * Displays the player vs. player game panel in the main window.
+     */
     public void gamePvP() {
-        frame.remove(panel);
+        gameFrame.remove(currentPanel);
 
-        panelPvP =new PanelPvP(this);
-        panel= panelPvP.getPanel();
+        pvpPanel = new PanelPvP(this);
+        currentPanel = pvpPanel.getPvpPanel();
 
-        frame.add(panel,BorderLayout.CENTER);
-        frame.revalidate();
-        frame.repaint();
-
-
+        gameFrame.add(currentPanel, BorderLayout.CENTER);
+        gameFrame.revalidate();
+        gameFrame.repaint();
     }
+
+    /**
+     * Displays the player vs. computer game panel in the main window.
+     */
     public void gamePvC() {
-        frame.remove(panel);
+        gameFrame.remove(currentPanel);
 
-        panelPvC =new PanelPvC(this);
-        panel= panelPvC.getPanel();
+        pvcPanel = new PanelPvC(this);
+        currentPanel = pvcPanel.getPvcPanel();
 
-        frame.add(panel,BorderLayout.CENTER);
-        frame.revalidate();
-        frame.repaint();
-
-
+        gameFrame.add(currentPanel, BorderLayout.CENTER);
+        gameFrame.revalidate();
+        gameFrame.repaint();
     }
-
-
-
 }
